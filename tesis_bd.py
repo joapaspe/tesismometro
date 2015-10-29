@@ -4,7 +4,7 @@ import cgi, urllib
 from google.appengine.ext import ndb
 
 
-record_fields = ["name", "words", "figures", "equations", "equations_inline"]
+record_fields = ["words", "figures", "equations", "equations_inline"]
 class Doctor(ndb.Model):
     name = ndb.StringProperty()
 

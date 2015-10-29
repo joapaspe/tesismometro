@@ -7,9 +7,12 @@ from flask import render_template
 import tesis_bd
 from flask import request
 
+# jinja2 stuff
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
+                               autoescape=True)
+
 app = Flask(__name__)
-
-
 # users = ["Pastor", "Flores", "Escamilla"]
 #
 #
@@ -17,6 +20,15 @@ app = Flask(__name__)
 #     dr = tesis_bd.Doctor(name=user)
 #     dr.put()
 
+
+# Filters
+def filter_dif(value):
+    if value > 0:
+        return '+' + str(value)
+    else:
+        return str(value)
+
+jinja_env.filters['filter_dif'] = filter_dif
 @app.route('/test')
 def hello_world():
     results = [
@@ -49,6 +61,8 @@ def hello_world():
 
     return render_template('index.html', results=results)
 
+
+
 @app.route('/')
 def show_results():
 
@@ -74,6 +88,34 @@ def show_results():
         results.sort(key=lambda x:-x["words"])
 
     return render_template('index.html', results=results)
+
+@app.route('/hist/<username>')
+def show_hist(username):
+    # Buscar el usuari
+    doctor = tesis_bd.Doctor.query(tesis_bd.Doctor.name == username).fetch()
+    if not doctor:
+        return render_template('hist.html')
+
+    doctor = doctor[0]
+    records = tesis_bd.Record.query(tesis_bd.Record.doctor == doctor.key).order(-tesis_bd.Record.date).fetch()
+
+
+    difs = []
+
+    for r, record in enumerate(records):
+        record_dif = {}
+        for field in tesis_bd.record_fields:
+            if r == len(records) - 1:
+                record_dif[field] = 0
+            else:
+                act = getattr(record,field)
+                ant = getattr(records[r+1],field)
+
+                record_dif[field] = act - ant
+        difs.append(record_dif)
+
+    return render_template('hist.html', records=records, doctor=doctor.name, difs=difs, fields=tesis_bd.record_fields)
+
 
 # @app.route('/clear')
 # def reset_bd():
@@ -132,6 +174,8 @@ def post_record():
 
 
     return render_template('show_post.html', doctor=params)
+
+
 if __name__ == '__main__':
     app.run()
 

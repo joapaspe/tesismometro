@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
+    <title>
     {% block title %}
-        <title>Super Tesis</title>
+        Super Tesis
     {% endblock %}
+    </title>
     <meta charset="UTF-8">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
@@ -34,7 +36,7 @@
             </tr>
             {% for doctor in results %}
                 <tr>
-                    <td>{{ doctor.name }}</td>
+                    <td><a href="/hist/{{ doctor.name }}">{{ doctor.name }}</a></td>
                     <td>{{ doctor.words }}</td>
                     <td>{{ doctor.figures }}</td>
                     <td>{{ doctor.equations }}</td>

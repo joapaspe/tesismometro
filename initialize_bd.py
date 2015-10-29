@@ -7,6 +7,8 @@ import os
 import tesis_bd
 from google.appengine.ext import ndb
 from google.appengine.ext import db
+import datetime
+
 
 def initialize_bd():
     users = ["Pastor", "Flores", "Escamilla"]
@@ -20,8 +22,6 @@ def initialize_bd():
          }
 
     # Remove data
-
-
     doctors = tesis_bd.Doctor.query().fetch()
     records = tesis_bd.Record.query().fetch()
     last_records = tesis_bd.LastRecord.query().fetch()
@@ -34,7 +34,6 @@ def initialize_bd():
     for record in last_records:
         record.key.delete()
 
-
     for user in users:
         dr = tesis_bd.Doctor(name=user)
         dr.put()
@@ -43,6 +42,19 @@ def initialize_bd():
         record = tesis_bd.Record(doctor=dr.key, words = 0, figures = 0, equations = 0, equations_inline = 0)
         record.put()
 
+        import random
+        max_words = random.randint(1, 30000)
+
+        for i in range(10):
+            words = random.randint(1, 30000)
+            figures = words/100
+            equations = words/1000
+            equations_inline = words/50
+            date = datetime.datetime(2015,11,i+1)
+            record = tesis_bd.Record(doctor=dr.key, words=words, figures=figures, equations=equations, equations_inline=equations_inline, date=date)
+            record.put()
+
         # The last record
         last_record = tesis_bd.LastRecord(doctor=dr.key, record=record.key)
         last_record.put()
+

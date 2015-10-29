@@ -1,0 +1,54 @@
+{% extends "index.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if not records %}
+            <p class="lead"> This is not the Doctor you are looking for</p>
+        {% else %}
+            <div class="page-header">
+                <h1>History of {{ doctor }}</h1>
+            </div>
+            <table class="table table-hover table-condensed">
+                <tr>
+
+                    <th>Words</th>
+                    <th>Figures</th>
+                    <th>Equations</th>
+                    <th>Equations Inline</th>
+                    <th>Date</th>
+                </tr>
+                {% for record in records %}
+                    {% set record_loop = loop %}
+                    <tr>
+                        {% for field in fields %}
+
+                            <td>{{ record[field] }}
+                                <small>
+                                    {%  if difs[record_loop.index-1][field] > 0 %}
+                                        <span class="label label-success">+
+
+                                    {%  elif difs[record_loop.index-1][field] == 0 %}
+                                        <span class="label label-default">
+
+                                    {% else %}
+                                        <span class="label label-danger">
+                                    {% endif %}
+                                    {{ difs[record_loop.index-1][field]}}</span>
+                                </small>
+                            </td>
+
+                        {% endfor %}
+                        <td>{{ record.date }}</td>
+
+                    </tr>
+                {% endfor %}
+
+            </table>
+            <hr>
+        {% endif %}
+    </div>
+{% endblock %}
