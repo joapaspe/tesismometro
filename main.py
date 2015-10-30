@@ -145,7 +145,7 @@ def post_record():
             record.figures = figures
             record.pages = pages
             record.cites = cites
-            record.date = datetime.date.now()
+            record.date = datetime.datetime.now()
             record.put()
     else:
         record = tesis_bd.Record(doctor=doctor.key, words=words, equations=equations, equations_inline=equations_inline, figures=figures, cites=cites, pages=pages)
