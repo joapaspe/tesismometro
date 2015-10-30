@@ -2,9 +2,9 @@
 <html>
 <head lang="en">
     <title>
-    {% block title %}
-        Super Tesis
-    {% endblock %}
+        {% block title %}
+            Super Tesis
+        {% endblock %}
     </title>
     <meta charset="UTF-8">
     <!-- Latest compiled and minified CSS -->
@@ -28,20 +28,21 @@
 
             <tr>
                 <th>Name</th>
-                <th>Words</th>
-                <th>Figures</th>
-                <th>Equations</th>
-                <th>Equations Inline</th>
-                <th>Date</th>
+                {% for header in headers %}
+                    <th>{{ header }}</th>
+                {% endfor %}
             </tr>
             {% for doctor in results %}
                 <tr>
                     <td><a href="/hist/{{ doctor.name }}">{{ doctor.name }}</a></td>
-                    <td>{{ doctor.words }}</td>
-                    <td>{{ doctor.figures }}</td>
-                    <td>{{ doctor.equations }}</td>
-                    <td>{{ doctor.equations_inline }}</td>
-                    <td>{{ doctor.date }}</td>
+                    {% for field in fields %}
+
+                        {% if field == "date" %}
+                            <td>{{ doctor[field].strftime('%d-%m-%Y') }}</td>
+                        {% else %}
+                            <td>{{ doctor[field] }}</td>
+                        {% endif %}
+                    {% endfor %}
                 </tr>
             {% endfor %}
 
