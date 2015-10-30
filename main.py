@@ -1,16 +1,17 @@
 from flask import Flask
-import jinja2
-import webapp2
-import os
 from initialize_bd import initialize_bd, hotfix
+import os
+import jinja2
+import stats
 from flask import render_template
 import tesis_bd
 from flask import request
-
+import json
 # jinja2 stuff
+
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
-                               autoescape=True)
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
+                                autoescape=True)
 
 app = Flask(__name__)
 # users = ["Pastor", "Flores", "Escamilla"]
@@ -22,8 +23,6 @@ app = Flask(__name__)
 
 
 # Filters
-
-
 
 @app.route('/')
 def show_results():
@@ -48,7 +47,14 @@ def show_results():
 
         results.sort(key=lambda x:-x["words"])
 
-    return render_template('index.html', results=results, headers=tesis_bd.record_names, fields=tesis_bd.record_fields)
+    draw_data = stats.get_draw_words()
+
+    return render_template('index.html',
+                           results=results,
+                           headers=tesis_bd.record_names,
+                           fields=tesis_bd.record_fields,
+                           draw_data=json.dumps(draw_data),
+                           )
 
 @app.route('/hist/<username>')
 def show_hist(username):
@@ -153,12 +159,8 @@ def post_record():
         lrecord.record = record.key
         lrecord.put()
 
-
+    stats.update_data()
     return render_template('show_post.html', doctor=params)
-
-
-
-
 
 
 

@@ -15,42 +15,57 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.9.0/vis.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.9.0/vis.min.css">
+    <script src="client/js/tesismometro.js"></script>
 </head>
 <body>
 
 {% block content %}
-
     <div class="container">
-        <div class="page-header">
-            <h1>Scoreboard</h1>
-        </div>
-        <table class="table table-hover table-condensed">
+        <div>
+            <div class="page-header">
+                <h1>Scoreboard</h1>
+            </div>
+            <table class="table table-hover table-condensed">
 
-            <tr>
-                <th>Name</th>
-                {% for header in headers %}
-                    <th>{{ header }}</th>
-                {% endfor %}
-            </tr>
-            {% for doctor in results %}
                 <tr>
-                    <td><a href="/hist/{{ doctor.name }}">{{ doctor.name }}</a></td>
-                    {% for field in fields %}
-
-                        {% if field == "date" %}
-                            <td>{{ doctor[field].strftime('%d-%m-%Y') }}</td>
-                        {% else %}
-                            <td>{{ doctor[field] }}</td>
-                        {% endif %}
+                    <th>Name</th>
+                    {% for header in headers %}
+                        <th>{{ header }}</th>
                     {% endfor %}
                 </tr>
-            {% endfor %}
+                {% for doctor in results %}
+                    <tr>
+                        <td><a href="/hist/{{ doctor.name }}">{{ doctor.name }}</a></td>
+                        {% for field in fields %}
 
-        </table>
+                            {% if field == "date" %}
+                                <td>{{ doctor[field].strftime('%d-%m-%Y %H:%M') }}</td>
+                            {% else %}
+                                <td>{{ doctor[field] }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div id="visualization"></div>
+        </div>
     </div>
-    <hr>
-    <img src="http://cdn.meme.am/instances/500x/65261364.jpg" class="img-responsive center-block" alt="Responsive image">
+    <script>
+        draw_chart_words({{ draw_data|safe }});
+    </script>
+{#    <img src="http://cdn.meme.am/instances/500x/65261364.jpg" class="img-responsive center-block" alt="Responsive image">#}
 
 {%  endblock %}
+
 </body>
 </html>
