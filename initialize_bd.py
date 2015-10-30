@@ -58,3 +58,17 @@ def initialize_bd():
         last_record = tesis_bd.LastRecord(doctor=dr.key, record=record.key)
         last_record.put()
 
+
+def hotfix():
+    name = "Escamilla"
+    words = 26074
+    figures = 54
+    equations = 20
+    equations_inline = 697
+    date = datetime.datetime(2015,10,28)
+
+
+    doctor = tesis_bd.Doctor.query(tesis_bd.Doctor.name==name).fetch()[0]
+    record = tesis_bd.Record(doctor=doctor.key, words=words, figures=figures, equations=equations, equations_inline=equations_inline, date=date)
+
+    record.put()

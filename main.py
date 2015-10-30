@@ -2,7 +2,7 @@ from flask import Flask
 import jinja2
 import webapp2
 import os
-from initialize_bd import initialize_bd
+from initialize_bd import initialize_bd, hotfix
 from flask import render_template
 import tesis_bd
 from flask import request
@@ -22,39 +22,6 @@ app = Flask(__name__)
 
 
 # Filters
-
-
-# @app.route('/test')
-# def hello_world():
-#     results = [
-#         {
-#             'name': 'Flores',
-#             'words': 20000,
-#             'figures': 100,
-#             'equations_inline': 500,
-#             'equations': 50,
-#             'last_date': "today"
-#         },
-#     {
-#             'name': 'Escamilla',
-#             'words': 20000,
-#             'figures': 100,
-#             'equations': 50,
-#             'equations_inline': 500,
-#             'last_date': "today"
-#         },
-#     {
-#             'name': 'Pastor',
-#             'words': 20000,
-#             'figures': 100,
-#             'equations': 50,
-#             'equations_inline': 500,
-#             'last_date': "today",
-#         },
-#
-#     ]
-#
-#     return render_template('index.html', results=results)
 
 
 
@@ -125,6 +92,11 @@ def show_hist(username):
 #         record.put()
 #
 #     return show_results()
+
+@app.route('/hotfix')
+def fix():
+#    hotfix()
+    return show_results()
 
 @app.route('/post', methods=['GET', 'POST'])
 def post_record():
