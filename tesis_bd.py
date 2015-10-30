@@ -4,7 +4,8 @@ import cgi, urllib
 from google.appengine.ext import ndb
 
 
-record_fields = ["words", "figures", "equations", "equations_inline"]
+record_fields = ["words", "figures", "equations", "equations_inline","cites","pages","date"]
+record_names = ["Words", "Figures", "Equations", "Equations inline","Cites","Pages", "Date"]
 class Doctor(ndb.Model):
     name = ndb.StringProperty()
 
@@ -16,7 +17,9 @@ class Record(ndb.Model):
     figures = ndb.IntegerProperty()
     equations = ndb.IntegerProperty(indexed=False)
     equations_inline = ndb.IntegerProperty(indexed=False)
-    date = ndb.DateTimeProperty(auto_now=True)
+    cites = ndb.IntegerProperty(default=0)
+    pages = ndb.IntegerProperty(default=0)
+    date = ndb.DateTimeProperty(auto_now_add=True)
 
 
 

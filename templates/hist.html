@@ -1,32 +1,37 @@
 {% extends "index.html" %}
 
 {% block title %}
-    History
+  History
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        {% if not records %}
-            <p class="lead"> This is not the Doctor you are looking for</p>
+       {% if not records %}
+            <h1>
+                <a href="../"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                This is not the Doctor you are looking for
+            </h1>
         {% else %}
             <div class="page-header">
-                <h1>History of {{ doctor }}</h1>
+                <h1>
+                    <a href="../"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                    History of {{ doctor }}
+                </h1>
             </div>
+
             <table class="table table-hover table-condensed">
                 <tr>
+                    {% for header in headers %}
+                    <th>{{ header }}</th>
+                    {% endfor %}
 
-                    <th>Words</th>
-                    <th>Figures</th>
-                    <th>Equations</th>
-                    <th>Equations Inline</th>
-                    <th>Date</th>
                 </tr>
                 {% for record in records %}
                     {% set record_loop = loop %}
                     <tr>
                         {% for field in fields %}
 
-                            <td>{{ record[field] }}
+                            <td>   {{ record[field] }}
                                 <small>
                                     {%  if difs[record_loop.index-1][field] > 0 %}
                                         <span class="label label-success">+
@@ -42,7 +47,7 @@
                             </td>
 
                         {% endfor %}
-                        <td>{{ record.date }}</td>
+                        <td>{{ record.date.strftime('%d-%m-%Y') }}</td>
 
                     </tr>
                 {% endfor %}
@@ -50,5 +55,6 @@
             </table>
             <hr>
         {% endif %}
+
     </div>
 {% endblock %}
