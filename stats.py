@@ -27,8 +27,8 @@ def update_data():
         values = (record.date.strftime('%Y-%m-%d %H:%M'), record.words)
         records_data[name].append(values)
 
-        if record.date > last_week and\
-            (not last_week_record[name] or record.date < last_week_record[name].date):
+        if record.date < last_week and\
+            (not last_week_record[name] or record.date > last_week_record[name].date):
             last_week_record[name] = record
 
         if not recent_week_record[name] or record.date > recent_week_record[name].date:
@@ -41,6 +41,8 @@ def update_data():
 
         if last_week_record[name] and recent_week_record[name]:
             week_words = recent_week_record[name].words - last_week_record[name].words
+        elif recent_week_record[name]:
+            week_words = recent_week_record[name].words
         week_standings.append((name, week_words))
 
     week_standings.sort(key=lambda x:-x[1])

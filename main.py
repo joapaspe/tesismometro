@@ -49,11 +49,13 @@ def show_results():
 
     draw_data = stats.get_draw_words()
 
+    week_standings = stats.get_week_standings()
     return render_template('index.html',
                            results=results,
                            headers=tesis_bd.record_names,
                            fields=tesis_bd.record_fields,
                            draw_data=json.dumps(draw_data),
+                           week_standings=week_standings
                            )
 
 @app.route('/hist/<username>')

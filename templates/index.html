@@ -23,37 +23,60 @@
 </head>
 <body>
 
+<div class="container">
+<div class="page-header">
+        <h1>Tesismometro!</h1>
+    </div>
+</div>
 {% block content %}
     <div class="container">
-        <div>
-            <div class="page-header">
-                <h1>Scoreboard</h1>
-            </div>
-            <table class="table table-hover table-condensed">
 
-                <tr>
-                    <th>Name</th>
-                    {% for header in headers %}
-                        <th>{{ header }}</th>
-                    {% endfor %}
-                </tr>
-                {% for doctor in results %}
+        <div class="row">
+            <div class="col-md-10">
+
+                    <h2>Scoreboard</h2>
+
+                <table class="table table-hover table-condensed">
                     <tr>
-                        <td><a href="/hist/{{ doctor.name }}">{{ doctor.name }}</a></td>
-                        {% for field in fields %}
-
-                            {% if field == "date" %}
-                                <td>{{ doctor[field].strftime('%d-%m-%Y %H:%M') }}</td>
-                            {% else %}
-                                <td>{{ doctor[field] }}</td>
-                            {% endif %}
+                        <th>Name</th>
+                        {% for header in headers %}
+                            <th>{{ header }}</th>
                         {% endfor %}
                     </tr>
-                {% endfor %}
+                    {% for doctor in results %}
+                        <tr>
+                            <td><a href="/hist/{{ doctor.name }}">{{ doctor.name }}</a></td>
+                            {% for field in fields %}
 
+                                {% if field == "date" %}
+                                    <td>{{ doctor[field].strftime('%d-%m-%Y %H:%M') }}</td>
+                                {% else %}
+                                    <td>{{ doctor[field] }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+        <div class="col-md-2">
+            <h3>Last 7 days standings...</h3>
+            <table class="table table-hover table-condensed">
+                <tr>
+                    <th>Pos</th>
+                    <th>Name</th>
+                    <th>Words</th>
+                </tr>
+            {% for week_record in week_standings %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{  week_record[0] }}</td>
+                    <td>{{ week_record[1] }}</td>
+                </tr>
+            {% endfor %}
             </table>
         </div>
-
+        </div>
         <hr>
 
         <div class="row">
@@ -63,7 +86,7 @@
     <script>
         draw_chart_words({{ draw_data|safe }});
     </script>
-{#    <img src="http://cdn.meme.am/instances/500x/65261364.jpg" class="img-responsive center-block" alt="Responsive image">#}
+    {#    <img src="http://cdn.meme.am/instances/500x/65261364.jpg" class="img-responsive center-block" alt="Responsive image">#}
 
 {%  endblock %}
 
