@@ -24,8 +24,7 @@ def update_data():
     last_week = (datetime.datetime.today() - datetime.timedelta(days=7)).replace(hour=0, minute=0, second=0, microsecond=0)
     for record in records:
         name = key_to_doctor[record.doctor]
-        values = (record.date.strftime('%Y-%m-%d %H:%M'), record.words)
-        records_data[name].append(values)
+        records_data[name].append(record)
 
         if record.date < last_week and\
             (not last_week_record[name] or record.date > last_week_record[name].date):
@@ -45,6 +44,8 @@ def update_data():
             week_words = recent_week_record[name].words
         week_standings.append((name, week_words))
 
+
+
     week_standings.sort(key=lambda x:-x[1])
     last_update = datetime.datetime.today()
 
@@ -55,10 +56,23 @@ def needs_update():
         return True
     return False
 
-def get_draw_words():
+
+
+def extract_field(field='words'):
+
+    field_data = {}
+
+    for user in records_data:
+        field_data[user] = [(x.date.strftime('%Y-%m-%d %H:%M'), getattr(x, field)) for x in records_data[user]]
+    return field_data
+
+def get_draw_info(field='words'):
     if needs_update():
         update_data()
-    return records_data
+    return extract_field(field)
+
+
+
 
 def get_week_standings():
     if needs_update():

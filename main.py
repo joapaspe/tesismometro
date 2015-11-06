@@ -27,6 +27,11 @@ app = Flask(__name__)
 @app.route('/')
 def show_results():
 
+    draw_field = request.args.get('draw')
+
+    if not draw_field or draw_field not in tesis_bd.record_fields[:-1]:
+        draw_field = 'words'
+
     users = tesis_bd.Doctor.query().fetch()
 
     results = []
@@ -47,7 +52,7 @@ def show_results():
 
         results.sort(key=lambda x:-x["words"])
 
-    draw_data = stats.get_draw_words()
+    draw_data = stats.get_draw_info(draw_field)
 
     week_standings = stats.get_week_standings()
     return render_template('index.html',
@@ -55,7 +60,8 @@ def show_results():
                            headers=tesis_bd.record_names,
                            fields=tesis_bd.record_fields,
                            draw_data=json.dumps(draw_data),
-                           week_standings=week_standings
+                           week_standings=week_standings,
+                           draw_field = tesis_bd.record_field_to_name[draw_field],
                            )
 
 @app.route('/hist/<username>')
@@ -144,6 +150,9 @@ def post_record():
     pages = int(params["pages"])
 
     record = lrecord.record.get()
+
+    last_values = [getattr(record, field) for field in tesis_bd.record_fields[:-1]]
+
     if record.date.day == day and\
        record.date.month == month and\
        record.date.year == year:
@@ -153,16 +162,18 @@ def post_record():
             record.figures = figures
             record.pages = pages
             record.cites = cites
-            record.date = datetime.datetime.now()
+            record.date = datetime.datetime.now()+datetime.timedelta(hours=1)
             record.put()
     else:
-        record = tesis_bd.Record(doctor=doctor.key, words=words, equations=equations, equations_inline=equations_inline, figures=figures, cites=cites, pages=pages)
+        record = tesis_bd.Record(doctor=doctor.key, words=words, equations=equations, equations_inline=equations_inline, figures=figures, cites=cites, pages=pages, date=datetime.datetime.now()+datetime.timedelta(hours=1))
         record.put()
         lrecord.record = record.key
         lrecord.put()
 
+    diff_values = [getattr(record, field)-last_values[i] for i, field in enumerate(tesis_bd.record_fields[:-1])]
+    diff_values.append(record.date.strftime('%Y-%m-%d %H:%M'))
     stats.update_data()
-    return render_template('show_post.html', doctor=params)
+    return render_template('show_post.html', doctor=diff_values, fields=tesis_bd.record_fields)
 
 
 

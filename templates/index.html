@@ -7,24 +7,26 @@
         {% endblock %}
     </title>
     <meta charset="UTF-8">
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.9.0/vis.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.9.0/vis.min.css">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.9.0/vis.min.js"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.9.0/vis.min.css">
     <script src="client/js/tesismometro.js"></script>
 </head>
 <body>
 
 <div class="container">
-<div class="page-header">
+    <div class="page-header">
         <h1>Tesismometro!</h1>
     </div>
 </div>
@@ -34,7 +36,7 @@
         <div class="row">
             <div class="col-md-10">
 
-                    <h2>Scoreboard</h2>
+                <h2>Scoreboard</h2>
 
                 <table class="table table-hover table-condensed">
                     <tr>
@@ -59,28 +61,46 @@
 
                 </table>
             </div>
-        <div class="col-md-2">
-            <h3>Last 7 days standings...</h3>
-            <table class="table table-hover table-condensed">
-                <tr>
-                    <th>Pos</th>
-                    <th>Name</th>
-                    <th>Words</th>
-                </tr>
-            {% for week_record in week_standings %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{  week_record[0] }}</td>
-                    <td>{{ week_record[1] }}</td>
-                </tr>
-            {% endfor %}
-            </table>
-        </div>
+            <div class="col-md-2">
+                <h3>Last 7 days standings...</h3>
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <th>Pos</th>
+                        <th>Name</th>
+                        <th>Words</th>
+                    </tr>
+                    {% for week_record in week_standings %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{  week_record[0] }}</td>
+                            <td>{{ week_record[1] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
         <hr>
 
         <div class="row">
-            <div id="visualization"></div>
+
+            <h2>Graph of {{ draw_field }}</h2>
+
+            <div class="col-md-10">
+                <div id="visualization"></div>
+            </div>
+            <div class="col-md-2">
+                <div class="btn-group-vertical" role="group">
+                    {%  for field in fields[:-1] %}
+                        <a class=
+                                   {% if headers[loop.index-1] == draw_field %}
+                                       "btn btn-success active"
+                                   {% else %}
+                                       "btn btn-primary" href="/?draw={{ field }}"
+                                   {% endif %}
+                          role="button">{{ headers[loop.index-1] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
     <script>

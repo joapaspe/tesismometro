@@ -6,6 +6,12 @@ from google.appengine.ext import ndb
 
 record_fields = ["words", "figures", "equations", "equations_inline","cites","pages","date"]
 record_names = ["Words", "Figures", "Equations", "Equations inline","Cites","Pages", "Date"]
+
+record_field_to_name = {}
+
+for i, _ in enumerate(record_fields):
+    record_field_to_name[record_fields[i]] = record_names[i]
+
 class Doctor(ndb.Model):
     name = ndb.StringProperty()
 

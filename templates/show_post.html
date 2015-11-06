@@ -5,14 +5,14 @@
     <title></title>
 </head>
 <body>
-    <table>
-        <tr>
-            <td>{{ doctor.name }}</td>
-            <td>{{ doctor.words }}</td>
-            <td>{{ doctor.figures }}</td>
-            <td>{{ doctor.equations }}</td>
-            <td>{{ doctor.equations_inline }}</td>
-        </tr>
-    </table>
+<table>
+    <tr>
+        {% for field in fields %}
+            <tr>
+            <td>{{ field }}: {{ doctor[loop.index-1] }}</td>
+            </tr>
+        {% endfor %}
+    </tr>
+</table>
 </body>
 </html>
