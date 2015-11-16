@@ -23,7 +23,7 @@ function draw_chart_words(draw_data) {
     }
     var options = {
         start: '2015-10-23',
-        end: '2015-11-15',
+        end: '2015-12-01',
         dataAxis: {visible: true},
         legend: true
     };
