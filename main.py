@@ -64,8 +64,12 @@ def show_results():
                            draw_field = tesis_bd.record_field_to_name[draw_field],
                            )
 
-@app.route('/hist/<username>')
+@app.route('/hist/<username>/')
 def show_hist(username):
+    draw_field = request.args.get('draw')
+
+    if not draw_field or draw_field not in tesis_bd.record_fields[:-1]:
+        draw_field = 'words'
     # Buscar el usuari
     doctor = tesis_bd.Doctor.query(tesis_bd.Doctor.name == username).fetch()
     if not doctor:
@@ -88,8 +92,9 @@ def show_hist(username):
 
                 record_dif[field] = act - ant
         difs.append(record_dif)
-
-    return render_template('hist.html', records=records, doctor=doctor.name, difs=difs, fields=tesis_bd.record_fields[:-1], headers=tesis_bd.record_names)
+    draw_dates = [x.date.strftime('%Y-%m-%d') for x in records]
+    return render_template('hist.html', records=records, doctor=doctor.name, difs=difs, fields=tesis_bd.record_fields[:-1], headers=tesis_bd.record_names,
+                           draw_dates = draw_dates, draw_field=draw_field)
 
 #estas dos funciones implican peligro https://www.youtube.com/watch?v=8CYzxXWRt-k
 
@@ -157,7 +162,7 @@ def post_record():
        record.date.month == month and\
        record.date.year == year:
             record.equations = equations
-            record.words= words
+            record.words = words
             record.equations_inline = equations_inline
             record.figures = figures
             record.pages = pages

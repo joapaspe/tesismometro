@@ -1,12 +1,12 @@
 {% extends "index.html" %}
 
 {% block title %}
-  History
+    History
 {% endblock %}
 
 {% block content %}
     <div class="container">
-       {% if not records %}
+        {% if not records %}
             <h1>
                 <a href="../"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
                 This is not the Doctor you are looking for
@@ -14,7 +14,7 @@
         {% else %}
             <div class="page-header">
                 <h1>
-                    <a href="../"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                    <a href="/"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
                     History of {{ doctor }}
                 </h1>
             </div>
@@ -22,7 +22,7 @@
             <table class="table table-hover table-condensed">
                 <tr>
                     {% for header in headers %}
-                    <th>{{ header }}</th>
+                        <th>{{ header }}</th>
                     {% endfor %}
 
                 </tr>
@@ -55,6 +55,28 @@
             </table>
             <hr>
         {% endif %}
+        <h2>Graph of {{ draw_field }}</h2>
 
+        <div class="col-md-10">
+            <div id="visualization"></div>
+        </div>
+        <div class="col-md-2">
+            <div class="btn-group-vertical" role="group">
+                {%  for field in fields %}
+                    <a class=
+                               {% if field == draw_field %}
+                                   "btn btn-primary active"
+                               {% else %}
+                                   "btn btn-default" href="./?draw={{ field }}"
+                               {% endif %}
+                    role="button">{{ headers[loop.index-1] }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        draw_hist_words({{ difs|safe }}, {{ draw_dates | safe }}, "{{ draw_field | safe }}");
+    </script>
     </div>
 {% endblock %}
