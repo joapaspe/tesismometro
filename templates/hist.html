@@ -68,7 +68,7 @@
                                {% if field == draw_field %}
                                    "btn btn-primary active"
                                {% else %}
-                                   "btn btn-default" href="./?draw={{ field }}"
+                                   "btn btn-default" href="./?draw={{ field }}#charts"
                                {% endif %}
                     role="button">{{ headers[loop.index-1] }}</a>
                 {% endfor %}
