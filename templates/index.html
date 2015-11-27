@@ -20,7 +20,7 @@
 
     <!-- Optional theme -->
     <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous"-->
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <script src="/client/js/tesismometro.js"></script>
 </head>
 <body>
@@ -47,7 +47,14 @@
                     </tr>
                     {% for doctor in results %}
                         <tr>
-                            <td><a href="/hist/{{ doctor.name }}">{{ doctor.name }}</a></td>
+                            <td>
+                                <a href="/hist/{{ doctor.name }}"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>
+                                <a href="/hist/{{ doctor.name }}#charts"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a>
+                                <!--a href="/hist/{{ doctor.name }}"-->{{ doctor.name }}<!--/a-->
+                                {% if loop.index == 1 %}
+                                <i class="fa fa-trophy"></i>
+                                {% endif %}
+                            </td>
                             {% for field in fields %}
 
                                 {% if field == "date" %}
@@ -71,7 +78,12 @@
                     </tr>
                     {% for week_record in week_standings %}
                         <tr>
-                            <td>{{ loop.index }}</td>
+                            <td>{{ loop.index }}
+                            {% if loop.index == 1 %}
+                                <!--span class="glyphicon glyphicon-fire" aria-hidden="true"></span-->
+                                <i class="fa fa-line-chart"></i>
+                            {% endif %}
+                            </td>
                             <td>{{  week_record[0] }}</td>
                             <td>{{ week_record[1] }}</td>
                         </tr>
