@@ -16,6 +16,7 @@
                 <h1>
                     <a href="/"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
                     History of {{ doctor }}
+                    <a href="#charts"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a>
                 </h1>
             </div>
 
@@ -55,7 +56,7 @@
             </table>
             <hr>
         {% endif %}
-        <h2>Graph of {{ draw_field }}</h2>
+        <h2 id="charts">Graph of {{ draw_field }}</h2>
 
         <div class="col-md-10">
             <div id="visualization"></div>

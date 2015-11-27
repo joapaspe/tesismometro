@@ -98,10 +98,10 @@ def show_hist(username):
 
 #estas dos funciones implican peligro https://www.youtube.com/watch?v=8CYzxXWRt-k
 
-# @app.route('/clear')
-# def reset_bd():
-#     initialize_bd()
-#     return show_results()
+#@app.route('/clear')
+#def reset_bd():
+#    initialize_bd()
+#    return show_results()
 
 # @app.route('/update')
 # def UpdateSchema(cursor=None, num_updated=0):
