@@ -21,9 +21,12 @@ function draw_chart_words(draw_data) {
             });
         }
     }
+    var today = new Date();
+    var tomorrow = new Date();
+    tomorrow.setDate(today.getDate()+1);
     var options = {
         start: '2015-10-23',
-        end: '2015-12-01',
+        end: tomorrow,
         dataAxis: {visible: true},
         legend: true
     };
