@@ -51,7 +51,7 @@ function draw_hist_words(difs, dates, field) {
         {
             id:1
         }
-    )
+    );
     for (var i in difs) {
         var group = difs[i][field] < 0? 0: 1;
         items.push({x:dates[i],
@@ -61,10 +61,12 @@ function draw_hist_words(difs, dates, field) {
     }
 
     var dataset = new vis.DataSet(items);
-
+    var today = new Date();
+    var tomorrow = new Date();
+    tomorrow.setDate(today.getDate()+1);
     var options = {
         start: '2015-10-23',
-        end: '2015-12-01',
+        end: tomorrow,
         dataAxis: {visible: true},
         style: 'bar',
         //legend: true
