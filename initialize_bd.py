@@ -12,7 +12,7 @@ import datetime
 
 def initialize_bd():
     users = ["Pastor", "Flores", "Escamilla"]
-
+    emails = ["joapaspe@gmail.com", "enflosae@gmail.com", "joaesfus@gmail.com"]
     rec = {
           'words': 0,
           'figures': 0,
@@ -34,8 +34,8 @@ def initialize_bd():
     for record in last_records:
         record.key.delete()
 
-    for user in users:
-        dr = tesis_bd.Doctor(name=user)
+    for i, user in enumerate(users):
+        dr = tesis_bd.Doctor(name=user, email=emails[i])
         dr.put()
 
         # The record
@@ -50,7 +50,7 @@ def initialize_bd():
             figures = words/100
             equations = words/1000
             equations_inline = words/50
-            date = datetime.datetime(2015,11,i+1)
+            date = datetime.datetime(2015,12,i+1)
             record = tesis_bd.Record(doctor=dr.key, words=words, figures=figures, equations=equations, equations_inline=equations_inline, date=date)
             record.put()
 

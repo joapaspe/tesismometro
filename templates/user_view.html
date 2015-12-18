@@ -1,14 +1,29 @@
 {% extends "index.html" %}
 
 {% block title %}
+
     User interface
 {% endblock %}
-
+ {% block user_area %}
+<div align="right">
+    <a href="{{ logout_url }}">Log out <span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
+    </div>
+        {% endblock %}
 {% block content %}
-
     <div class="container">
+<div class="page-header">
+                <h1>
+                    <a href="/"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                    <a href="/hist/{{ login }}"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>
+                    <a href="/hist/{{ login }}#charts"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a>
+                    {{ login }} Info
+                </h1>
+            </div>
+        </div>
+    <div class="container">
+    <div class="jumbotron col-md-11"">
         <p>User: {{ name }}</p>
         <p>Code: {{ code }}</p>
     </div>
-    <a href="{{ logout_url }}">Log Out!</a>
+</div>
 {% endblock %}

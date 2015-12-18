@@ -28,7 +28,12 @@
 <div class="container">
     <div class="page-header">
         <h1>Tesism&oacute;metro!</h1>
+        {% block user_area %}
+        <div align="right"><a href="/user">User area
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></div>
+        {% endblock %}
     </div>
+
 </div>
 {% block content %}
     <div class="container">

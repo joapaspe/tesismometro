@@ -116,27 +116,27 @@ def show_hist(username):
 #
 #     return show_results()
 
-@app.route('/hotfix')
-def fix():
-#    hotfix()
-    return show_results()
+# @app.route('/hotfix')
+# def fix():
+# #    hotfix()
+#     return show_results()
 
-@app.route('/update')
-def update_bd():
-    doctors = tesis_bd.Doctor.query().fetch()
-
-    emails = {'Flores': 'enflosae',
-              'Escamilla': 'joaesfus',
-              'Pastor': 'joapaspe'
-        }
-
-    for doctor in doctors:
-        email = emails[doctor.name]+"@gmail.com"
-        doctor.email = email
-        doctor.put()
-
-
-    return show_results()
+# @app.route('/update')
+# def update_bd():
+#     doctors = tesis_bd.Doctor.query().fetch()
+#
+#     emails = {'Flores': 'enflosae',
+#               'Escamilla': 'joaesfus',
+#               'Pastor': 'joapaspe'
+#         }
+#
+#     for doctor in doctors:
+#         email = emails[doctor.name]+"@gmail.com"
+#         doctor.email = email
+#         doctor.put()
+#
+#
+#     return show_results()
 @app.route('/post', methods=['GET', 'POST'])
 def post_record():
 
@@ -225,7 +225,7 @@ def user_view():
 
     doctor.put()
     logout_url = users.create_logout_url("/")
-    return render_template('user_view.html', name=name, email=email, code=code, logout_url=logout_url)
+    return render_template('user_view.html', login=doctor.name,name=name, email=email, code=code, logout_url=logout_url)
 
 
 if __name__ == '__main__':
