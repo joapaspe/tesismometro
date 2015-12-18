@@ -23,6 +23,8 @@ def update_data():
 
     last_week = (datetime.datetime.today() - datetime.timedelta(days=7)).replace(hour=0, minute=0, second=0, microsecond=0)
     for record in records:
+        if record.doctor not in key_to_doctor:
+            continue
         name = key_to_doctor[record.doctor]
         records_data[name].append(record)
 

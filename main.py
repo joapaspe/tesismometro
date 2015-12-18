@@ -2,16 +2,19 @@ from flask import Flask
 from initialize_bd import initialize_bd, hotfix
 import os
 import jinja2
+import random
 import stats
-from flask import render_template
+from flask import render_template, redirect
 import tesis_bd
 from flask import request
 import json
+from google.appengine.api import users
 # jinja2 stuff
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                 autoescape=True)
+
 
 app = Flask(__name__)
 # users = ["Pastor", "Flores", "Escamilla"]
@@ -98,10 +101,11 @@ def show_hist(username):
 
 #estas dos funciones implican peligro https://www.youtube.com/watch?v=8CYzxXWRt-k
 
-#@app.route('/clear')
-#def reset_bd():
-#    initialize_bd()
-#    return show_results()
+
+# @app.route('/clear')
+# def reset_bd():
+#     initialize_bd()
+#     return show_results()
 
 # @app.route('/update')
 # def UpdateSchema(cursor=None, num_updated=0):
@@ -117,20 +121,40 @@ def fix():
 #    hotfix()
     return show_results()
 
+@app.route('/update')
+def update_bd():
+    doctors = tesis_bd.Doctor.query().fetch()
+
+    emails = {'Flores': 'enflosae',
+              'Escamilla': 'joaesfus',
+              'Pastor': 'joapaspe'
+        }
+
+    for doctor in doctors:
+        email = emails[doctor.name]+"@gmail.com"
+        doctor.email = email
+        doctor.put()
+
+
+    return show_results()
 @app.route('/post', methods=['GET', 'POST'])
 def post_record():
 
     if request.method != 'POST':
         return
     params = request.form
+
     # Buscar el usuari
     doctor = tesis_bd.Doctor.query(tesis_bd.Doctor.name == params["name"]).fetch()
     if not doctor:
-        return
+        return render_template("error.html", message="The doctor is not found")
     doctor = doctor[0]
+
+    # Check the token
+    if not "token" in params or doctor.token != params["token"]:
+        return render_template("error.html", message="The doctor is not found?")
+
     # Crear el record
-
-
     lrecords = tesis_bd.LastRecord.query(tesis_bd.LastRecord.doctor == doctor.key).fetch()
     if not lrecords:
         # Create an empty record
@@ -180,6 +204,28 @@ def post_record():
     stats.update_data()
     return render_template('show_post.html', doctor=diff_values, fields=tesis_bd.record_fields)
 
+@app.route('/user', methods=['GET'])
+def user_view():
+    user = users.get_current_user()
+
+    if not user:
+        return redirect(users.create_login_url("/user"))
+    name = user.nickname()
+    email = user.email()
+    doctors = tesis_bd.Doctor.query(tesis_bd.Doctor.email == email).fetch()
+
+    if len(doctors) == 0:
+        return render_template('error.html', message="User not found in the DB.")
+
+    doctor = doctors[0]
+
+    if not doctor.token:
+        doctor.token = "%016x" % random.getrandbits(64)
+    code = doctor.token
+
+    doctor.put()
+    logout_url = users.create_logout_url("/")
+    return render_template('user_view.html', name=name, email=email, code=code, logout_url=logout_url)
 
 
 if __name__ == '__main__':

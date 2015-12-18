@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+
+{% block title %}
+    User interface
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <p>User: {{ name }}</p>
+        <p>Code: {{ code }}</p>
+    </div>
+    <a href="{{ logout_url }}">Log Out!</a>
+{% endblock %}

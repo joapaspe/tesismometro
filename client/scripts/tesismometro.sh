@@ -1,6 +1,7 @@
 #!/bin/bash
 ROOT=Latex
 USER=
+TOKEN=
 #SERVER=http://localhost:8080
 SERVER=http://tesismometro.appspot.com
 
@@ -28,5 +29,5 @@ echo "pages $pages"
 
 echo "#Uploading server"
 echo "curl --data "name=$USER\&words=$words\&equations_inline=$inlines\&equations=$equations\&figures=$figures\&cites=$cites\&pages=$pages" $SERVER/post"
-curl --data "name=$USER&words=$words&equations_inline=$inlines&equations=$equations&figures=$figures&cites=$cites&pages=$pages" $SERVER/post -o .post_output
+curl --data "name=$USER&words=$words&equations_inline=$inlines&equations=$equations&figures=$figures&cites=$cites&pages=$pages&token=$TOKEN" $SERVER/post -o .post_output
 xdg-open .post_output

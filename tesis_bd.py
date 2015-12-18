@@ -14,7 +14,8 @@ for i, _ in enumerate(record_fields):
 
 class Doctor(ndb.Model):
     name = ndb.StringProperty()
-
+    email = ndb.StringProperty(default="")
+    token = ndb.StringProperty(default="")
 
 class Record(ndb.Model):
 
