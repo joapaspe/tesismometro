@@ -10,17 +10,21 @@
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+            integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+            crossorigin="anonymous"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.9.0/vis.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.9.0/vis.min.css">
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
 
     <!-- Optional theme -->
     <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous"-->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <script src="/client/js/tesismometro.js"></script>
 </head>
 <body>
@@ -29,8 +33,8 @@
     <div class="page-header">
         <h1>Tesism&oacute;metro!</h1>
         {% block user_area %}
-        <div align="right"><a href="/user">User area
-        <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></div>
+            <div align="right"><a href="/user">User area
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></div>
         {% endblock %}
     </div>
 
@@ -53,11 +57,13 @@
                     {% for doctor in results %}
                         <tr>
                             <td>
-                                <a href="/hist/{{ doctor.name }}"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>
-                                <a href="/hist/{{ doctor.name }}#charts"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a>
+                                <a href="/hist/{{ doctor.name }}"><span class="glyphicon glyphicon-th-list"
+                                                                        aria-hidden="true"></span></a>
+                                <a href="/hist/{{ doctor.name }}#charts"><span class="glyphicon glyphicon-stats"
+                                                                               aria-hidden="true"></span></a>
                                 <!--a href="/hist/{{ doctor.name }}"-->{{ doctor.name }}<!--/a-->
                                 {% if loop.index == 1 %}
-                                <i class="fa fa-trophy"></i>
+                                    <i class="fa fa-trophy"></i>
                                 {% endif %}
                             </td>
                             {% for field in fields %}
@@ -84,12 +90,12 @@
                     {% for week_record in week_standings %}
                         <tr>
                             <td>{{ loop.index }}
-                            {% if loop.index == 1 %}
-                                <!--span class="glyphicon glyphicon-fire" aria-hidden="true"></span-->
-                                <i class="fa fa-line-chart"></i>
-                            {% endif %}
+                                {% if loop.index == 1 %}
+                                    <!--span class="glyphicon glyphicon-fire" aria-hidden="true"></span-->
+                                    <i class="fa fa-line-chart"></i>
+                                {% endif %}
                             </td>
-                            <td>{{  week_record[0] }}</td>
+                            <td>{{ week_record[0] }}</td>
                             <td>{{ week_record[1] }}</td>
                         </tr>
                     {% endfor %}
@@ -107,14 +113,14 @@
             </div>
             <div class="col-md-2">
                 <div class="btn-group-vertical" role="group">
-                    {%  for field in fields[:-1] %}
+                    {% for field in fields[:-1] %}
                         <a class=
                                    {% if headers[loop.index-1] == draw_field %}
                                        "btn btn-primary active"
                                    {% else %}
                                        "btn btn-default" href="/?draw={{ field }}"
                                    {% endif %}
-                          role="button">{{ headers[loop.index-1] }}</a>
+                        role="button">{{ headers[loop.index-1] }}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -125,15 +131,22 @@
     </script>
     {#    <img src="http://cdn.meme.am/instances/500x/65261364.jpg" class="img-responsive center-block" alt="Responsive image">#}
 
-{%  endblock %}
+{% endblock %}
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-  ga('create', 'UA-43961776-2', 'auto');
-  ga('send', 'pageview');
+    ga('create', 'UA-43961776-2', 'auto');
+    ga('send', 'pageview');
 
 </script>
 </body>

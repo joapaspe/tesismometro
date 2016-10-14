@@ -1,106 +1,107 @@
-from flask import Flask
-from initialize_bd import initialize_bd, hotfix
+"""Handles the http requests and interacts with the database"""
 import os
-import jinja2
 import random
+import json
+
+from flask import Flask
+import jinja2
 import stats
 from flask import render_template, redirect
 import tesis_bd
 from flask import request
-import json
-from google.appengine.api import users
-# jinja2 stuff
 
+from google.appengine.api import users
+
+# jinja2 configuration.
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
-                                autoescape=True)
-
+                               autoescape=True)
 
 app = Flask(__name__)
-# users = ["Pastor", "Flores", "Escamilla"]
-#
-#
-# for user in users:
-#     dr = tesis_bd.Doctor(name=user)
-#     dr.put()
 
-
-# Filters
 
 @app.route('/')
 def show_results():
+    """
+        Main page.
 
-    draw_field = request.args.get('draw')
-
-    if not draw_field or draw_field not in tesis_bd.record_fields[:-1]:
-        draw_field = 'words'
-
-    users = tesis_bd.Doctor.query().fetch()
-
+        :return: The request with the rendered template.
+    """
+    doctors = tesis_bd.Doctor.query().fetch()
     results = []
-
-    for doctor in users:
+    for doctor in doctors:
         last_record = tesis_bd.LastRecord.query(tesis_bd.LastRecord.doctor == doctor.key).fetch()
         if last_record:
             last_record = last_record[0]
             record = last_record.record.get()
-
             res = {
                 'name': doctor.name
             }
-            for field in tesis_bd.record_fields:
+            for field in tesis_bd.RECORD_FIELDS:
                 res[field] = getattr(record, field)
-
             results.append(res)
+        results.sort(key=lambda x: -x["words"])
 
-        results.sort(key=lambda x:-x["words"])
-
+    # Select the default drawing field.
+    draw_field = request.args.get('draw')
+    if not draw_field or draw_field not in tesis_bd.RECORD_FIELDS[:-1]:
+        draw_field = 'words'
     draw_data = stats.get_draw_info(draw_field)
 
+    # Compute the draw standings.
     week_standings = stats.get_week_standings()
     return render_template('index.html',
                            results=results,
-                           headers=tesis_bd.record_names,
-                           fields=tesis_bd.record_fields,
+                           headers=tesis_bd.RECORD_NAMES,
+                           fields=tesis_bd.RECORD_FIELDS,
                            draw_data=json.dumps(draw_data),
                            week_standings=week_standings,
-                           draw_field = tesis_bd.record_field_to_name[draw_field],
-                           )
+                           draw_field=tesis_bd.record_field_to_name[draw_field]
+                          )
+
 
 @app.route('/hist/<username>/')
 def show_hist(username):
+    """Extracts the histograms and show them to the final user.
+
+    :param username: Doctor name to show stats about.
+    :return: Rendered template with the doctor data stats.
+    """
     draw_field = request.args.get('draw')
 
-    if not draw_field or draw_field not in tesis_bd.record_fields[:-1]:
-        draw_field = 'words'
-    # Buscar el usuari
     doctor = tesis_bd.Doctor.query(tesis_bd.Doctor.name == username).fetch()
     if not doctor:
         return render_template('hist.html')
 
     doctor = doctor[0]
-    records = tesis_bd.Record.query(tesis_bd.Record.doctor == doctor.key).order(-tesis_bd.Record.date).fetch()
+    records = tesis_bd.Record.query(
+        tesis_bd.Record.doctor == doctor.key).order(-tesis_bd.Record.date).fetch()
 
-
-    difs = []
-
-    for r, record in enumerate(records):
-        record_dif = {}
-        for field in tesis_bd.record_fields[:-1]:
-            if r == len(records) - 1:
-                record_dif[field] = 0
+    # Compute the difference with the previous record.
+    diffs = []
+    for i, record in enumerate(records):
+        record_diff = {}
+        for field in tesis_bd.RECORD_FIELDS[:-1]:
+            if i == len(records) - 1:
+                record_diff[field] = 0
             else:
-                act = getattr(record,field)
-                ant = getattr(records[r+1],field)
+                act = getattr(record, field)
+                ant = getattr(records[i + 1], field)
 
-                record_dif[field] = act - ant
-        difs.append(record_dif)
+                record_diff[field] = act - ant
+        diffs.append(record_diff)
+
+    # Default graph field.
+    if not draw_field or draw_field not in tesis_bd.RECORD_FIELDS[:-1]:
+        draw_field = 'words'
+
     draw_dates = [x.date.strftime('%Y-%m-%d') for x in records]
-    return render_template('hist.html', records=records, doctor=doctor.name, difs=difs, fields=tesis_bd.record_fields[:-1], headers=tesis_bd.record_names,
-                           draw_dates = draw_dates, draw_field=draw_field)
+    return render_template('hist.html', records=records, doctor=doctor.name, difs=diffs,
+                           fields=tesis_bd.RECORD_FIELDS[:-1], headers=tesis_bd.RECORD_NAMES,
+                           draw_dates=draw_dates, draw_field=draw_field)
 
-#estas dos funciones implican peligro https://www.youtube.com/watch?v=8CYzxXWRt-k
 
+# Next functions should be used carefully: https://www.youtube.com/watch?v=8CYzxXWRt-k
 
 # @app.route('/clear')
 # def reset_bd():
@@ -137,36 +138,41 @@ def show_hist(username):
 #
 #
 #     return show_results()
+
+
 @app.route('/post', methods=['GET', 'POST'])
 def post_record():
+    """
+            Request for adding the data to the database.
 
+            :return: An http response with the submitted information
+    """
     if request.method != 'POST':
-        return
-    params = request.form
+        return render_template(
+            "error.html", message="GET mode not allowed for adding a new record.")
 
-    # Buscar el usuari
+    params = request.form
     doctor = tesis_bd.Doctor.query(tesis_bd.Doctor.name == params["name"]).fetch()
     if not doctor:
-        return render_template("error.html", message="The doctor is not found")
+        return render_template("error.html", message="The doctor is not found.")
     doctor = doctor[0]
 
-    # Check the token
-    if not "token" in params or doctor.token != params["token"]:
-        return render_template("error.html", message="The doctor is not found?")
+    # Check the token.
+    if "token" not in params or doctor.token != params["token"]:
+        return render_template("error.html", message="Unable to authenticate the doctor.")
 
-    # Crear el record
-    lrecords = tesis_bd.LastRecord.query(tesis_bd.LastRecord.doctor == doctor.key).fetch()
-    if not lrecords:
+    # Get the record tu update.
+    record_list = tesis_bd.LastRecord.query(tesis_bd.LastRecord.doctor == doctor.key).fetch()
+    if not record_list:
         # Create an empty record
-        empty_record = tesis_bd.Record(doctor.key, 0, 0, 0, 0,0,0)
+        empty_record = tesis_bd.Record(doctor.key, 0, 0, 0, 0, 0, 0)
         empty_record.put()
-        lrecord = tesis_bd.LastRecord(doctor=doctor.key, record=empty_record.key)
-        lrecord.put()
+        last_record = tesis_bd.LastRecord(doctor=doctor.key, record=empty_record.key)
+        last_record.put()
     else:
-        lrecord= lrecords[0]
+        last_record = record_list[0]
 
-
-    # Si es el mateix dia actualizem
+    # If the record is from the same day we update it.
     import datetime
     now = datetime.datetime.now()
     day, month, year = now.day, now.month, now.year
@@ -177,35 +183,40 @@ def post_record():
     figures = int(params["figures"])
     cites = int(params["cites"])
     pages = int(params["pages"])
+    record = last_record.record.get()
+    last_values = [getattr(record, field) for field in tesis_bd.RECORD_FIELDS[:-1]]
 
-    record = lrecord.record.get()
-
-    last_values = [getattr(record, field) for field in tesis_bd.record_fields[:-1]]
-
-    if record.date.day == day and\
-       record.date.month == month and\
-       record.date.year == year:
-            record.equations = equations
-            record.words = words
-            record.equations_inline = equations_inline
-            record.figures = figures
-            record.pages = pages
-            record.cites = cites
-            record.date = datetime.datetime.now()+datetime.timedelta(hours=1)
-            record.put()
-    else:
-        record = tesis_bd.Record(doctor=doctor.key, words=words, equations=equations, equations_inline=equations_inline, figures=figures, cites=cites, pages=pages, date=datetime.datetime.now()+datetime.timedelta(hours=1))
+    if record.date.day == day and record.date.month == month and record.date.year == year:
+        record.equations = equations
+        record.words = words
+        record.equations_inline = equations_inline
+        record.figures = figures
+        record.pages = pages
+        record.cites = cites
+        record.date = datetime.datetime.now() + datetime.timedelta(hours=1)
         record.put()
-        lrecord.record = record.key
-        lrecord.put()
+    else:
+        record = tesis_bd.Record(doctor=doctor.key, words=words,
+                                 equations=equations, equations_inline=equations_inline,
+                                 figures=figures, cites=cites, pages=pages,
+                                 date=datetime.datetime.now()+datetime.timedelta(hours=1))
+        record.put()
+        last_record.record = record.key
+        last_record.put()
 
-    diff_values = [getattr(record, field)-last_values[i] for i, field in enumerate(tesis_bd.record_fields[:-1])]
+    diff_values = [getattr(record, field) - last_values[i]
+                   for i, field in enumerate(tesis_bd.RECORD_FIELDS[:-1])]
     diff_values.append(record.date.strftime('%Y-%m-%d %H:%M'))
     stats.update_data()
-    return render_template('show_post.html', doctor=diff_values, fields=tesis_bd.record_fields)
+    return render_template('show_post.html', doctor=diff_values, fields=tesis_bd.RECORD_FIELDS)
+
 
 @app.route('/user', methods=['GET'])
 def user_view():
+    """
+        User interface (only shows the token).
+        :return: An http response with the submitted information.
+    """
     user = users.get_current_user()
 
     if not user:
@@ -225,9 +236,9 @@ def user_view():
 
     doctor.put()
     logout_url = users.create_logout_url("/")
-    return render_template('user_view.html', login=doctor.name,name=name, email=email, code=code, logout_url=logout_url)
+    return render_template('user_view.html', login=doctor.name, name=name, email=email, code=code,
+                           logout_url=logout_url)
 
 
 if __name__ == '__main__':
     app.run()
-

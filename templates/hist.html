@@ -34,16 +34,16 @@
 
                             <td>   {{ record[field] }}
                                 <small>
-                                    {%  if difs[record_loop.index-1][field] > 0 %}
+                                    {% if difs[record_loop.index-1][field] > 0 %}
                                         <span class="label label-success">+
 
-                                    {%  elif difs[record_loop.index-1][field] == 0 %}
+                                    {% elif difs[record_loop.index-1][field] == 0 %}
                                         <span class="label label-default">
 
                                     {% else %}
                                         <span class="label label-danger">
                                     {% endif %}
-                                    {{ difs[record_loop.index-1][field]}}</span>
+                                    {{ difs[record_loop.index-1][field] }}</span>
                                 </small>
                             </td>
 
@@ -63,7 +63,7 @@
         </div>
         <div class="col-md-2">
             <div class="btn-group-vertical" role="group">
-                {%  for field in fields %}
+                {% for field in fields %}
                     <a class=
                                {% if field == draw_field %}
                                    "btn btn-primary active"
