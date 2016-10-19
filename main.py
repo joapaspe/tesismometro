@@ -101,45 +101,6 @@ def show_hist(username):
                            draw_dates=draw_dates, draw_field=draw_field)
 
 
-# Next functions should be used carefully: https://www.youtube.com/watch?v=8CYzxXWRt-k
-
-# @app.route('/clear')
-# def reset_bd():
-#     initialize_bd()
-#     return show_results()
-
-# @app.route('/update')
-# def UpdateSchema(cursor=None, num_updated=0):
-#     records = tesis_bd.Record.query().fetch()
-#
-#     for record in records:
-#         record.put()
-#
-#     return show_results()
-
-# @app.route('/hotfix')
-# def fix():
-# #    hotfix()
-#     return show_results()
-
-# @app.route('/update')
-# def update_bd():
-#     doctors = tesis_bd.Doctor.query().fetch()
-#
-#     emails = {'Flores': 'enflosae',
-#               'Escamilla': 'joaesfus',
-#               'Pastor': 'joapaspe'
-#         }
-#
-#     for doctor in doctors:
-#         email = emails[doctor.name]+"@gmail.com"
-#         doctor.email = email
-#         doctor.put()
-#
-#
-#     return show_results()
-
-
 @app.route('/post', methods=['GET', 'POST'])
 def post_record():
     """
@@ -165,7 +126,7 @@ def post_record():
     record_list = tesis_bd.LastRecord.query(tesis_bd.LastRecord.doctor == doctor.key).fetch()
     if not record_list:
         # Create an empty record
-        empty_record = tesis_bd.Record(doctor.key, 0, 0, 0, 0, 0, 0)
+        empty_record = tesis_bd.Record(doctor=doctor.key)
         empty_record.put()
         last_record = tesis_bd.LastRecord(doctor=doctor.key, record=empty_record.key)
         last_record.put()
@@ -221,7 +182,6 @@ def user_view():
 
     if not user:
         return redirect(users.create_login_url("/user"))
-    name = user.nickname()
     email = user.email()
     doctors = tesis_bd.Doctor.query(tesis_bd.Doctor.email == email).fetch()
 
@@ -229,6 +189,7 @@ def user_view():
         return render_template('error.html', message="User not found in the DB.")
 
     doctor = doctors[0]
+    name = doctor.name
 
     if not doctor.token:
         doctor.token = "%016x" % random.getrandbits(64)

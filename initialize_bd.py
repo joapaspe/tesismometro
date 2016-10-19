@@ -6,11 +6,7 @@ import tesis_bd
 __author__ = 'joanpastor'
 
 
-def initialize_bd():
-    """Resets the bd with the default users and empty data"""
-    users = ['Pastor', 'Flores', 'Escamilla']
-    emails = ['joapaspe@gmail.com', 'enflosae@gmail.com', 'joaesfus@gmail.com']
-
+def clear_bd():
     # Remove data.
     doctors = tesis_bd.Doctor.query().fetch()
     records = tesis_bd.Record.query().fetch()
@@ -23,6 +19,12 @@ def initialize_bd():
         record.key.delete()
     for record in last_records:
         record.key.delete()
+
+
+def initialize_bd():
+    """Resets the bd with the default users and empty data"""
+    users = ['Pastor', 'Flores', 'Escamilla']
+    emails = ['joapaspe@gmail.com', 'enflosae@gmail.com', 'joaesfus@gmail.com']
 
     for i, user in enumerate(users):
         doctor = tesis_bd.Doctor(name=user, email=emails[i])
@@ -48,6 +50,20 @@ def initialize_bd():
         # The last record
         last_record = tesis_bd.LastRecord(doctor=doctor.key, record=record.key)
         last_record.put()
+
+
+def add_user(name, email):
+    # Check if the use exists
+    doctors = tesis_bd.Doctor.query(tesis_bd.Doctor.email == email).fetch()
+    if len(doctors) > 0:
+        # Cannot create the doctor.
+        return None
+
+    new_doctor = tesis_bd.Doctor(name=name, email=email)
+
+    new_doctor.put()
+
+    return new_doctor
 
 
 # def hotfix():

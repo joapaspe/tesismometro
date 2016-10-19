@@ -26,10 +26,10 @@ class Doctor(ndb.Model):
 
 class Record(ndb.Model):
     doctor = ndb.KeyProperty(kind=Doctor)
-    words = ndb.IntegerProperty(indexed=False)
-    figures = ndb.IntegerProperty()
-    equations = ndb.IntegerProperty(indexed=False)
-    equations_inline = ndb.IntegerProperty(indexed=False)
+    words = ndb.IntegerProperty(indexed=False, default=0)
+    figures = ndb.IntegerProperty(default=0)
+    equations = ndb.IntegerProperty(indexed=False, default=0)
+    equations_inline = ndb.IntegerProperty(indexed=False, default=0)
     cites = ndb.IntegerProperty(default=0)
     pages = ndb.IntegerProperty(default=0)
     date = ndb.DateTimeProperty(auto_now_add=True)

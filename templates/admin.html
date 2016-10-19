@@ -1,0 +1,46 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Admin Area
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if bd_is_empty %}
+            The BD is empty maybe you want to create a new one.
+            <a href="/admin/dummy" class="btn btn-default">Create Dummy BD!</a>
+        {% else %}
+            <table class="table table-hover table-condensed">
+                <tr>
+                    <th>Name</th>
+                    <th>email</th>
+                </tr>
+                {% for doctor in doctors %}
+                    {% set record_loop = loop %}
+                    <tr>
+                        <td> {{ doctor.name }}</td>
+                        <td> {{ doctor.email }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <hr>
+        {% endif %}
+        <h2>Create new user</h2>
+        <div class="row">
+            <div class="col-md-4">
+            <form action="/admin/adduser/" role="form" method="post">
+                <div class="form-inline">
+                <div class="form-group">
+                    <label for="name">User Name</label>
+                    <input type="text" class="form-control" name="name" placeholder="John Smith">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" name="email" placeholder="jon@gmail.com">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </form>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}

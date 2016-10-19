@@ -23,8 +23,22 @@
     </div>
     <div class="container">
         <div class="jumbotron col-md-11">
-            <p>User: {{ name }}</p>
-            <p>Code: {{ code }}</p>
+                <p>User: {{ name }}</p>
+                <p>Code: {{ code }}</p>
+        </div>
+        <h2>Instructions (linux)</h2>
+            <ol class="list-group">
+            <li>Download the <a href="/client/scripts/tesismometro.sh" target="_blank">bash script</a>
+                in the thesis directory.</li>
+            <li>Modify the current fields in the script</li>
+                <ol>
+                    <li><code>ROOT</code>: Name of the latex main file (without extension)</li>
+                    <li><code>USER</code>: {{ name }}</li>
+                    <li><code>TOKEN</code>: {{ code }}</li>
+                </ol>
+            <li>Execute the script: <code>./tesismometro.sh</code></li>
+        </ol>
+        </p>
         </div>
     </div>
 {% endblock %}

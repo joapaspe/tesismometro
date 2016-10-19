@@ -2,7 +2,6 @@
 ROOT=Latex
 USER=
 TOKEN=
-#SERVER=http://localhost:8080
 SERVER=http://tesismometro.appspot.com
 
 if [ -z "$USER" ]
