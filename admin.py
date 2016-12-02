@@ -18,8 +18,7 @@ app = Flask(__name__)
 
 @app.route('/admin/', methods=['GET'])
 def admin_view():
-    """
-        User interface (only shows the token).
+    """User interface (only shows the token).
         :return: An http response with the submitted information.
     """
 
@@ -38,9 +37,7 @@ def admin_view():
 
 @app.route('/admin/dummy/', methods=['GET'])
 def create_dummy_database():
-    """
-        Creates dummy database (only for testing)
-    """
+    """Creates dummy database (only for testing)"""
     # Check if the database is empty
     doctors = tesis_bd.Doctor.query().fetch()
     if len(doctors) > 0:
